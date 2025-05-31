@@ -1,0 +1,282 @@
+<h3 style="display:flex;align-items:center;"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg' style='height:1.5em;margin-right:0.5em;'>MCP Server for PHP (Laravel) – Full Workflow, API Integration & Testing Guide</h3>
+<section>
+  <h4>1. What is MCP in Laravel?</h4>
+  <p>MCP is a bridge system between AI (LLM) and your Laravel API. It reads your Laravel API documentation, understands it, and executes requests intelligently and securely. MCP exposes a unified HTTP interface for various backend actions, making it easy to automate, test, and integrate with AI agents or external clients in any Laravel project.</p>
+</section>
+<section>
+  <h4>2. API Endpoint Discovery</h4>
+  <p>MCP exposes a discovery endpoint (e.g. <code>/api/mcp/tools</code>) that returns a list of available actions (tools), their descriptions, and required parameters. This allows clients to know what actions are available and how to call them.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-php">use Illuminate\Http\Request;
+
+class McpController extends Controller
+{
+    public function toolsDiscovery()
+    {
+        return response()->json([
+            'tools' => [
+                [
+                    'name' => 'languages/get',
+                    'description' => 'Get all languages for a user',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => ['user_id' => ['type' => 'integer']],
+                        'required' => ['user_id']
+                    ]
+                ]
+            ]
+        ]);
+    }
+}
+</code></pre></div>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "tools": [
+    {
+      "name": "languages/get",
+      "description": "Get all languages for a user",
+      "parameters": {
+        "type": "object",
+        "properties": { "user_id": { "type": "integer" } },
+        "required": ["user_id"]
+      }
+    }
+  ]
+}
+</code></pre></div>
+</section>
+<section>
+  <h4>3. Client Prepares a Request</h4>
+  <p>The client (web app, AI agent, etc.) selects a tool and fills in the required parameters. The request payload specifies the action and its input.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "action": "languages/get",
+  "input": { "user_id": 123 }
+}
+</code></pre></div>
+</section>
+<section>
+  <h4>4. Request Execution</h4>
+  <p>The client sends a POST request to the MCP execute endpoint (e.g. <code>/api/mcp/execute</code>), which receives the action and input, and routes to the appropriate logic in your backend.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-bash">curl -X POST http://localhost:8000/api/mcp/execute \
+  -H "Content-Type: application/json" \
+  -d '{ "action": "languages/get", "input": { "user_id": 123 } }'
+</code></pre></div>
+</section>
+<section>
+  <h4>5. Backend Routing & Logic</h4>
+  <p>The backend (see <code>McpController</code>) receives the request, parses the <code>action</code> and <code>input</code>, and routes to the appropriate logic. You can map each action to a function or model operation.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-php">use Illuminate\Http\Request;
+
+class McpController extends Controller
+{
+    public function mcpExecute(Request $request)
+    {
+        $action = $request->input('action');
+        $input = $request->input('input');
+        if ($action == 'languages/get') {
+            $userId = $input['user_id'];
+            $langs = [
+                ['id' => 1, 'user_id' => $userId, 'language' => 'English', 'level' => 'Advanced']
+            ];
+            return response()->json(['extraFields' => ['languages' => $langs]]);
+        }
+        return response()->json(['error' => 'Unknown action']);
+    }
+}
+</code></pre></div>
+</section>
+<section>
+  <h4>6. Response Handling</h4>
+  <p>The backend returns a JSON response with the result or an error message. Here are examples of a success and error response.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "extraFields": {
+    "languages": [
+      { "id": 1, "user_id": 123, "language": "English", "level": "Advanced" }
+    ]
+  }
+}
+</code></pre></div>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{ "error": "user_id required" }
+</code></pre></div>
+</section>
+<section>
+  <h4>7. Frontend Testing Tool</h4>
+  <p>The file <code>mcp-test.html</code> is a full-featured web app for testing MCP endpoints. Enter the Tools Discovery URL and Execute URL, load tools, select a tool, fill parameters, and execute. The tool sends the request, displays the response, and saves the history.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-js">async function executeTool() {
+  const payload = { action: tool.name, input: input, timestamp: new Date().toISOString() };
+  const res = await fetch(executeUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const responseJson = await res.json();
+  responseBox.textContent = JSON.stringify(responseJson, null, 2);
+}
+</code></pre></div>
+</section>
+<section>
+  <h4>8. Backend Details</h4>
+  <p>All MCP logic is in your controller (e.g. <code>McpController</code>). Endpoints are routed in <code>routes/api.php</code>. CSRF is disabled for <code>/api/mcp/*</code> routes for API compatibility. Each action is mapped to a backend function or model operation. Errors are returned as <code>{ "error": "..." }</code> with appropriate HTTP status codes.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-tree">/my-mcp-app
+  app/Http/Controllers/McpController.php
+  routes/api.php
+  (other files...)
+</code></pre></div>
+</section>
+<section>
+  <h4>9. Automated Testing (Optional)</h4>
+  <p>You can write feature tests in <code>tests/Feature/</code> using Laravel's HTTP testing tools to verify your MCP endpoints work as expected.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-php">public function test_languages_get() {
+    $response = $this->postJson('/api/mcp/execute', [
+        'action' => 'languages/get',
+        'input' => ['user_id' => 123]
+    ]);
+    $response->assertStatus(200);
+    $response->assertJsonStructure(['extraFields' => ['languages']]);
+}
+</code></pre></div>
+</section>
+<section>
+  <h4>10. Important MCP & OpenAI Integration URLs</h4>
+  <p>Below are examples of how to generate and format the most important URLs for MCP and OpenAI (function-calling) integrations in your project. These are essential for connecting your API to AI agents, testing tools, or external services.</p>
+  <ul>
+    <li><strong>MCP Tools Discovery URL:</strong> <code>http://your-domain.com/api/mcp/tools</code> (e.g. <code>http://localhost:8000/api/mcp/tools</code>)</li>
+    <li><strong>MCP Execute URL:</strong> <code>http://your-domain.com/api/mcp/execute</code> (e.g. <code>http://localhost:8000/api/mcp/execute</code>)</li>
+    <li><strong>OpenAI Function Calling:</strong> Use the same URLs for schema and execution. Example payload:</li>
+  </ul>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "action": "languages/get",
+  "input": { "user_id": 123 }
+}</code></pre></div>
+  <ul>
+    <li><strong>Other Useful URLs:</strong></li>
+    <li>Company MCP Tools: <code>http://your-domain.com/api/mcp/company/tools</code></li>
+    <li>Company MCP Execute: <code>http://your-domain.com/api/mcp/company/execute</code></li>
+  </ul>
+  <p>In the MCP Tester, paste the Tools Discovery URL and Execute URL in the configuration fields. For OpenAI or any LLM agent, use the same URLs for function schema and execution. Always use HTTPS in production for security.</p>
+  <hr/>
+  <h4>11. OpenAI Plugin Manifest & OpenAPI Schema Examples</h4>
+  <p>To integrate your MCP API with OpenAI (or any LLM that supports plugins/function-calling), provide the following files in your server's <code>/.well-known/</code> directory:</p>
+  <strong>OpenAI Plugin Manifest (ai-plugin.json):</strong>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "schema_version": "v1",
+  "name_for_model": "flowxtra_mcp",
+  "name_for_human": "Flowxtra MCP",
+  "description_for_model": "Tools to manage applicant languages using Flowxtra's MCP interface. Supports adding, updating, retrieving, and deleting languages for applicants.",
+  "description_for_human": "Manage applicant languages via Flowxtra's backend. Add, get, update, and delete language info securely.",
+  "auth": {
+    "type": "bearer",
+    "authorization_type": "header"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost:8000/.well-known/openapi.json",
+    "openapi_url": "http://localhost:8000/.well-known/openapi.json"
+  },
+  "logo_url": "https://partners.flowxtra.com/wp-content/uploads/2025/02/MainLogo@2x-2048x466.png",
+  "contact_email": "info@flowxtra.com",
+  "legal_info_url": "https://flowxtra.com/privacy-policy",
+  "version": "1.0.0"
+}</code></pre></div>
+  <strong>OpenAPI Schema (openapi.json):</strong>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Flowxtra MCP API",
+    "version": "1.0.0",
+    "description": "API for managing applicant languages via MCP."
+  },
+  "servers": [
+    { "url": "http://localhost:8000" }
+  ],
+  "paths": {
+    "/api/mcp/execute": {
+      "post": {
+        "summary": "Execute MCP tool",
+        "description": "Executes a tool action (add, get, update, delete language)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": { "type": "string", "example": "languages/get" },
+                  "input": { "type": "object", "description": "Tool input parameters (see below)" }
+                },
+                "required": ["action", "input"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LanguageAddInput": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "integer" },
+          "language": { "type": "string" },
+          "level": { "type": "string" }
+        },
+        "required": ["user_id", "language", "level"]
+      },
+      "LanguageGetInput": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "integer" }
+        },
+        "required": ["user_id"]
+      },
+      "LanguageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "language": { "type": "string" },
+          "level": { "type": "string" }
+        },
+        "required": ["id", "language", "level"]
+      },
+      "LanguageDeleteInput": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" }
+        },
+        "required": ["id"]
+      }
+    }
+  }
+}</code></pre></div>
+  <h4>12. Adding to Courser and Clouda AI LLMs</h4>
+  <p><strong>Courser AI Integration:</strong></p>
+  <ol>
+    <li>Navigate to your Courser AI dashboard</li>
+    <li>Go to "API Integrations" &gt; "Add New Integration"</li>
+    <li>Select "MCP API" as the integration type</li>
+    <li>Enter your MCP API base URL</li>
+    <li>Upload or paste your OpenAPI spec (openapi.json)</li>
+    <li>Configure authentication if required</li>
+    <li>Test the connection and save</li>
+  </ol>
+  <p><strong>Clouda AI Integration:</strong></p>
+  <ol>
+    <li>Log into your Clouda AI console</li>
+    <li>Select "Integrations" from the left menu</li>
+    <li>Click "Add Integration" &gt; "Custom API"</li>
+    <li>Choose "MCP Compatible API"</li>
+    <li>Provide your MCP API endpoint URL</li>
+    <li>Upload the OpenAPI specification file</li>
+    <li>Set up any required API keys or tokens</li>
+    <li>Validate and deploy the integration</li>
+  </ol>
+  <p>Both platforms will automatically discover your API's capabilities through the OpenAPI spec and make them available to their respective AI models. The MCP standardization ensures consistent interaction patterns across different LLM platforms.</p> 

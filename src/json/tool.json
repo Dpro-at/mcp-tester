@@ -1,0 +1,918 @@
+{
+    "tools": [
+    {
+    "name": "languages/get",
+    "description": "Get all languages for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "languages/add",
+    "description": "Add a language for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "language": {
+    "type": "string"
+    },
+    "level": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "language",
+    "level"
+    ]
+    }
+    },
+    {
+    "name": "languages/update",
+    "description": "Update a language for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "language": {
+    "type": "string"
+    },
+    "level": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "language",
+    "level"
+    ]
+    }
+    },
+    {
+    "name": "languages/delete",
+    "description": "Delete a language by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "skills/get",
+    "description": "Get all skills for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "skills/add",
+    "description": "Add a skill for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "name": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "name"
+    ]
+    }
+    },
+    {
+    "name": "skills/update",
+    "description": "Update a skill for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "name": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "name"
+    ]
+    }
+    },
+    {
+    "name": "skills/delete",
+    "description": "Delete a skill by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "courses/get",
+    "description": "Get all courses for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "courses/add",
+    "description": "Add a course for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "course": {
+    "type": "string"
+    },
+    "institution": {
+    "type": "string"
+    },
+    "year": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id",
+    "course",
+    "institution",
+    "year"
+    ]
+    }
+    },
+    {
+    "name": "courses/update",
+    "description": "Update a course for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "course": {
+    "type": "string"
+    },
+    "institution": {
+    "type": "string"
+    },
+    "year": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id",
+    "course",
+    "institution",
+    "year"
+    ]
+    }
+    },
+    {
+    "name": "courses/delete",
+    "description": "Delete a course by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "education/get",
+    "description": "Get all education details for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "education/add",
+    "description": "Add education details for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "school": {
+    "type": "string"
+    },
+    "degree": {
+    "type": "string"
+    },
+    "field": {
+    "type": "string"
+    },
+    "start_year": {
+    "type": "integer"
+    },
+    "end_year": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id",
+    "school",
+    "degree",
+    "field",
+    "start_year",
+    "end_year"
+    ]
+    }
+    },
+    {
+    "name": "education/update",
+    "description": "Update education details for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "school": {
+    "type": "string"
+    },
+    "degree": {
+    "type": "string"
+    },
+    "field": {
+    "type": "string"
+    },
+    "start_year": {
+    "type": "integer"
+    },
+    "end_year": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id",
+    "school",
+    "degree",
+    "field",
+    "start_year",
+    "end_year"
+    ]
+    }
+    },
+    {
+    "name": "education/delete",
+    "description": "Delete education details by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "experience/get",
+    "description": "Get all work experience details for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "experience/add",
+    "description": "Add work experience details for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "company": {
+    "type": "string"
+    },
+    "position": {
+    "type": "string"
+    },
+    "start_date": {
+    "type": "string"
+    },
+    "end_date": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "company",
+    "position",
+    "start_date",
+    "end_date"
+    ]
+    }
+    },
+    {
+    "name": "experience/update",
+    "description": "Update work experience details for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "company": {
+    "type": "string"
+    },
+    "position": {
+    "type": "string"
+    },
+    "start_date": {
+    "type": "string"
+    },
+    "end_date": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "company",
+    "position",
+    "start_date",
+    "end_date"
+    ]
+    }
+    },
+    {
+    "name": "experience/delete",
+    "description": "Delete work experience details by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "projects/get",
+    "description": "Get all projects for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "projects/add",
+    "description": "Add a project for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "title": {
+    "type": "string"
+    },
+    "description": {
+    "type": "string"
+    },
+    "year": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id",
+    "title",
+    "description",
+    "year"
+    ]
+    }
+    },
+    {
+    "name": "projects/update",
+    "description": "Update a project for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "title": {
+    "type": "string"
+    },
+    "description": {
+    "type": "string"
+    },
+    "year": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id",
+    "title",
+    "description",
+    "year"
+    ]
+    }
+    },
+    {
+    "name": "projects/delete",
+    "description": "Delete a project by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "internships/get",
+    "description": "Get all internships for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "internships/add",
+    "description": "Add an internship for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "company": {
+    "type": "string"
+    },
+    "position": {
+    "type": "string"
+    },
+    "start_date": {
+    "type": "string"
+    },
+    "end_date": {
+    "type": "string"
+    },
+    "description": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "company",
+    "position",
+    "start_date",
+    "end_date",
+    "description"
+    ]
+    }
+    },
+    {
+    "name": "internships/update",
+    "description": "Update an internship for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "company": {
+    "type": "string"
+    },
+    "position": {
+    "type": "string"
+    },
+    "start_date": {
+    "type": "string"
+    },
+    "end_date": {
+    "type": "string"
+    },
+    "description": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "company",
+    "position",
+    "start_date",
+    "end_date",
+    "description"
+    ]
+    }
+    },
+    {
+    "name": "internships/delete",
+    "description": "Delete an internship by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "references/get",
+    "description": "Get all references for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "references/add",
+    "description": "Add a reference for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "referent_name": {
+    "type": "string"
+    },
+    "company": {
+    "type": "string"
+    },
+    "phone": {
+    "type": "string"
+    },
+    "email": {
+    "type": "string"
+    },
+    "file": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "referent_name",
+    "company",
+    "phone",
+    "email"
+    ]
+    }
+    },
+    {
+    "name": "references/update",
+    "description": "Update a reference for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "referent_name": {
+    "type": "string"
+    },
+    "company": {
+    "type": "string"
+    },
+    "phone": {
+    "type": "string"
+    },
+    "email": {
+    "type": "string"
+    },
+    "file": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "referent_name",
+    "company",
+    "phone",
+    "email"
+    ]
+    }
+    },
+    {
+    "name": "references/delete",
+    "description": "Delete a reference by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "socialmedia/get",
+    "description": "Get all social media for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "socialmedia/add",
+    "description": "Add a social media for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "type": {
+    "type": "string"
+    },
+    "url": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "type",
+    "url"
+    ]
+    }
+    },
+    {
+    "name": "socialmedia/update",
+    "description": "Update a social media for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "type": {
+    "type": "string"
+    },
+    "url": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "type",
+    "url"
+    ]
+    }
+    },
+    {
+    "name": "socialmedia/delete",
+    "description": "Delete a social media by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "certificats/get",
+    "description": "Get all certificates for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "certificats/add",
+    "description": "Add a certificate for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "name": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "name"
+    ]
+    }
+    },
+    {
+    "name": "certificats/update",
+    "description": "Update a certificate for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "name": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "name"
+    ]
+    }
+    },
+    {
+    "name": "certificats/delete",
+    "description": "Delete a certificate by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    },
+    {
+    "name": "hobies/get",
+    "description": "Get all hobbies for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "user_id"
+    ]
+    }
+    },
+    {
+    "name": "hobies/add",
+    "description": "Add a hobby for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "user_id": {
+    "type": "integer"
+    },
+    "name": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "user_id",
+    "name"
+    ]
+    }
+    },
+    {
+    "name": "hobies/update",
+    "description": "Update a hobby for a user",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "name": {
+    "type": "string"
+    }
+    },
+    "required": [
+    "id",
+    "name"
+    ]
+    }
+    },
+    {
+    "name": "hobies/delete",
+    "description": "Delete a hobby by id",
+    "parameters": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    }
+    },
+    "required": [
+    "id"
+    ]
+    }
+    }
+    ]
+    }

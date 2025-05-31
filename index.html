@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <title>MCP Tool Tester Pro | Dpro Advanced MCP Testing Tool</title>
+  <meta name="description" content="MCP Tool Tester Pro is an advanced, open-source platform for testing, debugging, and managing Model Context Protocol (MCP) APIs. Features include history tracking, saved endpoints, AI agent integration, and powerful developer tools. Built by Dpro GmbH and Flowxtra for seamless LLM, agent, and API development.">
+  <meta name="keywords" content="MCP, Model Context Protocol, MCP tester, API testing, AI agent, LLM, developer tools, REST API, OpenAI, Flowxtra, Dpro, endpoint management, API debugging, workflow automation, open source, MCP Tool Tester Pro, MCP server, MCP client, context protocol, AI integration, software development, API platform, agent framework, GPT, privacy, security, MCP documentation, MCP SDK, MCP tools, MCP workflow, MCP history, MCP endpoints, MCP AI, MCP open source, MCP Austria, MCP Vienna, MCP Europe, MCP Dpro, MCP Flowxtra, MCP mcp-tester.com">
+  <meta name="author" content="Flowxtra & Dpro">
+  <meta property="og:title" content="MCP Tool Tester Pro">
+  <meta property="og:description" content="Advanced MCP API testing tool by Flowxtra and Dpro. Test, debug, and manage MCP endpoints with AI agent support and developer features.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/src/img/mcp.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="apple-touch-icon" sizes="57x57" href="src/img/fav/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="src/img/fav/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="src/img/fav/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="src/img/fav/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="src/img/fav/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="src/img/fav/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="src/img/fav/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="src/img/fav/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="src/img/fav/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="src/img/fav/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="src/img/fav/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="src/img/fav/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="src/img/fav/favicon-16x16.png">
+  <link rel="manifest" href="src/img/fav/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="src/img/fav/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="src/css/mcp-test.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header style="display: flex; align-items: flex-start; justify-content: flex-start; margin-bottom: 2.5rem; position: relative;">
+      <a href="https://dpro.at" target="_blank" style="display:inline-block; margin-right: 24px;">
+        <img src="src/img/full-dpro-logo.png" alt="Dpro Full Logo" class="logo-img" id="dpro-header-logo" style="height:150px; width:auto;">
+      </a>
+      <div style="flex:1; text-align:center;">
+        <h1></i>MCP Tester Tool Pro</h1>
+        <p class="subtitle">Advanced tool for testing MCP APIs with history tracking, saved endpoints, and powerful debugging features. Streamline your development workflow with this comprehensive testing solution developed by Flowxtra and Dpro.</p>
+      </div>
+    </header>
+    
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('test')"><i class="fas fa-vial btn-icon"></i> Test Tool</div>
+      <div class="tab" onclick="switchTab('map')"><i class="fas fa-sitemap btn-icon"></i> Map</div>
+      <div class="tab" onclick="switchTab('history')"><i class="fas fa-history btn-icon"></i> History</div>
+      <div class="tab" onclick="switchTab('endpoints')"><i class="fas fa-server btn-icon"></i> Saved Endpoints</div>
+      <div class="tab" onclick="switchTab('settings')"><i class="fas fa-cog btn-icon"></i> Settings</div>
+      <div class="tab" onclick="switchTab('whatismcp')"><i class="fas fa-question-circle btn-icon"></i> What is MCP</div>
+      <div class="tab" onclick="switchTab('about')"><i class="fas fa-info-circle btn-icon"></i> About</div>
+    </div>
+    
+    <div id="test-tab" class="tab-content active">
+      <div class="card">
+        <div class="card-title">
+          <span class="status-indicator" id="connection-status"></span>
+         MCP API Configuration
+        </div>
+        <div class="param-group">
+          <div class="param-item">
+            <label for="toolsUrl"><i class="fas fa-link"></i> Tools Discovery URL</label>
+            <input type="text" id="toolsUrl" placeholder="Enter tools discovery endpoint">
+            <small>Example: http://localhost:8000/api/mcp/tools/</small>
+          </div>
+          <div class="param-item">
+            <label for="executeUrl"><i class="fas fa-rocket"></i> Execute URL</label>
+            <input type="text" id="executeUrl" placeholder="Enter execute endpoint">
+            <small>Example: http://localhost:8000/api/mcp/execute</small>
+          </div>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn btn-primary" onclick="loadTools()">
+            <i class="fas fa-sync-alt btn-icon"></i> Load Tools
+          </button>
+          <button class="btn btn-secondary" onclick="saveCurrentEndpoints()">
+            <i class="fas fa-save btn-icon"></i> Save
+          </button>
+        </div>
+      </div>
+      
+      <div class="card" id="tool-section" style="display: none;">
+        <div class="card-title"><i class="fas fa-toolbox"></i> Tool Parameters</div>
+        <div class="tool-desc" id="toolDesc"></div>
+        <div id="paramsContainer" class="param-group"></div>
+        <button class="btn btn-primary" onclick="executeTool()">
+          <i class="fas fa-play btn-icon"></i> Execute Tool
+        </button>
+      </div>
+      
+      <div class="card response-container">
+        <div class="card-title"><i class="fas fa-code"></i> Response</div>
+        <div class="response-actions">
+          <button class="btn btn-primary btn-sm" onclick="copyResponse()">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="clearResponse()">
+            <i class="fas fa-trash"></i> Clear
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="shareResponse()">
+            <i class="fas fa-share"></i> Share
+          </button>
+        </div>
+        <pre id="responseBox">{
+  "status": "ready",
+  "message": "Select a tool and execute to see results here"
+}</pre>
+      </div>
+    </div>
+    
+    <div id="history-tab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-history"></i> Execution History</div>
+        <div id="historyList"></div>
+      </div>
+    </div>
+    
+    <div id="endpoints-tab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-server"></i> Saved Endpoints</div>
+        <p>Manage your frequently used API endpoints for quick access.</p>
+        
+        <div class="endpoint-manager">
+          <label><i class="fas fa-plus-circle"></i> Add New Endpoint</label>
+          <div class="param-group">
+            <div class="param-item">
+              <input type="text" id="newEndpointName" placeholder="Endpoint name (e.g. Production)">
+            </div>
+            <div class="param-item">
+              <input type="text" id="newToolsUrl" placeholder="MCP Tools Discovery URL">
+            </div>
+            <div class="param-item">
+              <input type="text" id="newExecuteUrl" placeholder="MCP Execute URL">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addNewEndpoint()">
+            <i class="fas fa-plus btn-icon"></i> Add Endpoint
+          </button>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+          <label><i class="fas fa-list"></i> Your Saved Endpoints</label>
+          <div class="endpoint-list" id="endpointList"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="settings-tab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-cog"></i> Settings</div>
+        <div class="param-group">
+          <div class="param-item">
+            <label><i class="fas fa-palette"></i> Theme</label>
+            <select id="themeSelect">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="blue">Blue</option>
+            </select>
+          </div>
+          <div class="param-item">
+            <label><i class="fas fa-bell"></i> Notifications</label>
+            <select id="notificationsSelect">
+              <option value="enabled">Enabled</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+          <div class="param-item">
+            <label><i class="fas fa-database"></i> Clear Local Data</label>
+            <button class="btn btn-secondary" onclick="clearAllData()">
+              <i class="fas fa-trash btn-icon"></i> Clear All
+            </button>
+            <small>This will remove all saved endpoints and history</small>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">
+          <i class="fas fa-save btn-icon"></i> Save Settings
+        </button>
+      </div>
+    </div>
+    
+    <div id="whatismcp-tab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-question-circle"></i> What is MCP?</div>
+        <div style="margin-bottom:1.2rem;">
+          <p><strong>Model Context Protocol (MCP)</strong> is an open protocol that standardizes how applications provide context to Large Language Models (LLMs). Think of MCP as the "USB-C for AI"—it lets you connect your AI models to any data source or tool in a secure, flexible, and vendor-neutral way. <a href="https://modelcontextprotocol.io/introduction" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">Learn more on the official MCP website</a>.</p>
+          <ul>
+            <li>Build agents and complex workflows on top of LLMs</li>
+            <li>Integrate with a growing list of pre-built tools and data sources</li>
+            <li>Switch between LLM providers easily</li>
+            <li>Follow best practices for security and data privacy</li>
+          </ul>
+          <p><strong>General Architecture:</strong> MCP uses a client-server model where hosts (like IDEs or AI tools) connect to MCP servers that expose resources, tools, and prompts. This enables seamless integration between your data, your tools, and your AI models.</p>
+        </div>
+        <div id="mcp-language-tabs" style="margin-bottom:1.5rem;">
+          <div class="tabs" id="mcp-sdk-tabs" style="margin-bottom:0.5rem;">
+            <div class="tab active" onclick="showMcpSdkTab('python')"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' style='height:1.2em;vertical-align:middle;margin-right:0.4em;'> Python</div>
+            <div class="tab" onclick="showMcpSdkTab('typescript')"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' style='height:1.2em;vertical-align:middle;margin-right:0.4em;'> TypeScript</div>
+            <div class="tab" onclick="showMcpSdkTab('java')"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' style='height:1.2em;vertical-align:middle;margin-right:0.4em;'> Java</div>
+            <div class="tab" onclick="showMcpSdkTab('kotlin')"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg' style='height:1.2em;vertical-align:middle;margin-right:0.4em;'> Kotlin</div>
+            <div class="tab" onclick="showMcpSdkTab('csharp')"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' style='height:1.2em;vertical-align:middle;margin-right:0.4em;'> C#</div>
+            <div class="tab" onclick="showMcpSdkTab('swift')"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg' style='height:1.2em;vertical-align:middle;margin-right:0.4em;'> Swift</div>
+            <div class="tab" onclick="showMcpSdkTab('flutter')"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg' style='height:1.2em;vertical-align:middle;margin-right:0.4em;'> Flutter</div>
+            <div class="tab" onclick="showMcpSdkTab('php')"><i class="devicon-laravel-plain colored"></i> Laravel</div>
+            <div class="tab" onclick="showMcpSdkTab('other')"><i class="fas fa-code btn-icon"></i> Other</div>
+          </div>
+          <div id="mcp-sdk-content" style="background:#fff;border-radius:10px;padding:1.2rem;">
+            <!-- Example for Python/Flask (repeat for all languages) -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-python" style="display:block;"></div>
+            <!-- Example for TypeScript/Express (repeat for all languages) -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-typescript" style="display:none;"></div>
+            <!-- Example for Java/Spring Boot -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-java" style="display:none;"></div>
+            <!-- Example for Kotlin/Ktor -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-kotlin" style="display:none;"></div>
+            <!-- Example for C#/.NET Core -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-csharp" style="display:none;"></div>
+            <!-- Example for Swift/Vapor -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-swift" style="display:none;"></div>
+            <!-- Example for Flutter/Dart -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-flutter" style="display:none;"></div>
+            <!-- Example for PHP/Laravel -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-php" style="display:none;"></div>
+            <!-- Example for Other Languages -->
+            <div class="mcp-sdk-tab-content" id="mcp-sdk-other" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        function showMcpSdkTab(lang) {
+          document.querySelectorAll('#mcp-sdk-tabs .tab').forEach((el, idx) => {
+            if (el.textContent.trim().toLowerCase().includes(lang) || (lang === 'other' && el.textContent.includes('Other'))) {
+              el.classList.add('active');
+            } else {
+              el.classList.remove('active');
+            }
+          });
+          document.querySelectorAll('.mcp-sdk-tab-content').forEach((el) => {
+            el.style.display = 'none';
+          });
+          document.getElementById('mcp-sdk-' + lang).style.display = 'block';
+        }
+        function copyMcpCode(lang) {
+          const codeBlock = document.querySelector(`#mcp-sdk-${lang} code`);
+          if (codeBlock) {
+            const text = codeBlock.innerText || codeBlock.textContent;
+            navigator.clipboard.writeText(text);
+          }
+        }
+      </script>
+    </div>
+    
+    <div id="map-tab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-sitemap"></i> Tools Map</div>
+        <div id="tools-map-container"></div>
+      </div>
+    </div>
+    
+    <div id="about-tab" class="tab-content">
+      <div class="card about-card">
+        <div class="card-title"><i class="fas fa-info-circle"></i> About Dpro & Flowxtra</div>
+        <div class="about-companies" style="display: flex; flex-wrap: wrap; gap: 3rem; justify-content: center; align-items: stretch; padding: 2.5rem 1rem 2rem 1rem;">
+          <div style="flex:1; min-width:260px; max-width:400px; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:2rem 1.5rem; display:flex; flex-direction:column; align-items:center; margin-bottom:1.5rem;">
+            <a href="https://dpro.at" target="_blank" style="margin-bottom:1.2rem;">
+              <img src="src/img/full-dpro-logo.png" alt="Dpro Logo" style="height:70px; width:auto;">
+            </a>
+            <h3 style="margin:0 0 0.5rem 0; font-weight:700; color:#23272f;">Dpro GmbH</h3>
+            <p style="font-size:1rem; color:#23272f; margin-bottom:1.2rem; text-align:left;">A leading software development and AI/IoT solutions company based in Vienna, Austria. Dpro empowers businesses with advanced technology, innovation, and digital growth.</p>
+            <a href="https://dpro.at" target="_blank" style="color:var(--primary); text-decoration:underline; font-weight:500;">Dpro GmbH</a>
+          </div>
+          <div style="flex:1; min-width:260px; max-width:400px; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:2rem 1.5rem; display:flex; flex-direction:column; align-items:center; margin-bottom:1.5rem;">
+            <a href="https://flowxtra.com" target="_blank" style="margin-bottom:1.2rem;">
+              <img src="src/img/flowxtra-logo.png" alt="Flowxtra Logo" style="height:50px; width:auto;">
+            </a>
+            <h3 style="margin:0 0 0.5rem 0; font-weight:700; color:#23272f;">Flowxtra GmbH</h3>
+            <p style="font-size:1rem; color:#23272f; margin-bottom:1.2rem; text-align:left;">An AI-powered recruitment platform that streamlines hiring, job management, and candidate screening. Flowxtra offers free job posting, API integrations, and smart automation for modern HR teams.</p>
+            <a href="https://flowxtra.com" target="_blank" style="color:var(--primary); text-decoration:underline; font-weight:500;">Flowxtra GmbH
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <div class="footer-logos" style="display: flex; justify-content: center; align-items: center; gap: 2rem; margin-bottom: 1rem;">
+        <a href="https://flowxtra.com" target="_blank">
+          <img src="src/img/flowxtra-logo.png" alt="Flowxtra Logo" class="footer-logo-img flowxtra-footer-logo" style="height:40px; width:auto;" id="flowxtra-footer-logo">
+        </a>
+        <a href="https://dpro.at" target="_blank">
+          <img src="src/img/full-dpro-logo.png" alt="Dpro Logo" class="footer-logo-img dpro-footer-logo" style="height:150px; width:auto;" id="dpro-footer-logo">
+        </a>
+      </div>
+      <div class="footer-links">
+        <a href="https://flowxtra.com" target="_blank">Flowxtra</a>
+        <a href="https://flowxtra.com" target="_blank">Free Job Posting</a>
+        <a href="https://flowxtra.com" target="_blank">AI Recruitment</a>
+        <a href="https://dpro.at" target="_blank">Dpro AI Agent</a>
+        <a href="https://flowxtra.com" target="_blank">Recruitment Agent</a>
+        <a href="https://fity.at" target="_blank">Fity</a>
+        <a href="https://dpro.at" target="_blank">Dpro</a>
+        <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+        <a href="https://github.com/Dpro-at/mcp-tester" target="_blank" title="GitHub"><i class="fab fa-github"></i> GitHub</a>
+        <a href="https://www.linkedin.com/company/dpro-gmbh/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i> LinkedIn</a>
+      </div>
+      <p>MCP Tool Tester Pro v2.0 - Developed by <strong>Flowxtra</strong> & <strong>Dpro</strong> © 2025</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jointjs@4.0.0/dist/joint.min.js"></script>
+  <script src="src/js/mcp-test.js"></script>
+</body>
+</html>

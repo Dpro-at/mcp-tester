@@ -1,0 +1,310 @@
+<h3 style="display:flex;align-items:center;"><img src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' style='height:1.5em;margin-right:0.5em;'>MCP Server for C# (.NET Core) – Full Workflow & API Guide</h3>
+<section>
+  <h4>1. What is MCP in C#/.NET Core?</h4>
+  <p>MCP acts as a bridge between your ASP.NET Core API and AI/LLM clients. It exposes a discovery endpoint and a unified execute endpoint, allowing clients to discover available actions and execute them securely. This enables automation, testing, and integration with AI agents or external clients in any .NET project.</p>
+</section>
+<section>
+  <h4>2. API Endpoint Discovery</h4>
+  <p>The discovery endpoint (e.g. <code>/api/mcp/tools</code>) returns a list of available actions (tools), their descriptions, and required parameters. This allows clients to know what actions are available and how to call them.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+
+namespace McpServer.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class McpController : ControllerBase
+    {
+        [HttpGet("tools")]
+        public Dictionary<string, object> ToolsDiscovery()
+        {
+            var tool = new Dictionary<string, object>
+            {
+                ["name"] = "languages/get",
+                ["description"] = "Get all languages for a user",
+                ["parameters"] = new Dictionary<string, object>
+                {
+                    ["type"] = "object",
+                    ["properties"] = new Dictionary<string, object> { ["user_id"] = new Dictionary<string, string> { ["type"] = "integer" } } },
+                    ["required"] = new List<string> { "user_id" }
+                }
+            };
+            return new Dictionary<string, object> { ["tools"] = new List<object> { tool } };
+        }
+    }
+}
+</code></pre></div>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "tools": [
+    {
+      "name": "languages/get",
+      "description": "Get all languages for a user",
+      "parameters": {
+        "type": "object",
+        "properties": { "user_id": { "type": "integer" } },
+        "required": ["user_id"]
+      }
+    }
+  ]
+}</code></pre></div>
+</section>
+<section>
+  <h4>3. Client Prepares a Request</h4>
+  <p>The client (web app, AI agent, etc.) selects a tool and fills in the required parameters. The request payload specifies the action and its input.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "action": "languages/get",
+  "input": { "user_id": 123 }
+}</code></pre></div>
+</section>
+<section>
+  <h4>4. Request Execution Endpoint</h4>
+  <p>The client sends a POST request to the MCP execute endpoint (e.g. <code>/api/mcp/execute</code>). The backend receives the action and input, and routes to the appropriate logic.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+
+namespace McpServer.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class McpController : ControllerBase
+    {
+        [HttpPost("execute")]
+        public Dictionary<string, object> McpExecute([FromBody] Dictionary<string, object> body)
+        {
+            var action = body["action"] as string;
+            var input = body["input"] as Dictionary<string, object>;
+            if (action == "languages/get")
+            {
+                var userId = (int)input["user_id"];
+                var langs = new List<Dictionary<string, object>>
+                {
+                    new Dictionary<string, object> { ["id"] = 1, ["user_id"] = userId, ["language"] = "English", ["level"] = "Advanced" }
+                };
+                return new Dictionary<string, object> { ["extraFields"] = new Dictionary<string, object> { ["languages"] = langs } };
+            }
+            return new Dictionary<string, object> { ["error"] = "Unknown action" };
+        }
+    }
+}
+</code></pre></div>
+</section>
+<section>
+  <h4>5. Example Request & Response</h4>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-bash">curl -X POST http://localhost:5000/api/mcp/execute \
+  -H "Content-Type: application/json" \
+  -d '{ "action": "languages/get", "input": { "user_id": 123 } }'</code></pre></div>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "extraFields": {
+    "languages": [
+      { "id": 1, "user_id": 123, "language": "English", "level": "Advanced" }
+    ]
+  }
+}</code></pre></div>
+</section>
+<section>
+  <h4>6. Error Handling</h4>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "error": "user_id required"
+}</code></pre></div>
+</section>
+<section>
+  <h4>7. Testing with Frontend Tool</h4>
+  <p>You can use the included <code>mcp-test.html</code> frontend tool to test your endpoints. Enter the discovery and execute URLs, select a tool, fill parameters, and execute. The tool will display the response and save the history.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-js">async function executeTool() {
+  const payload = { action: tool.name, input: input, timestamp: new Date().toISOString() };
+  const res = await fetch(executeUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const responseJson = await res.json();
+  responseBox.textContent = JSON.stringify(responseJson, null, 2);
+}</code></pre></div>
+</section>
+<section>
+  <h4>8. Backend File Structure & Routing</h4>
+  <p>Organize your backend files as shown below. Place your controller in the appropriate directory for your .NET project.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-tree">/my-mcp-app
+  src/Controllers/McpController.cs
+  (other files...)
+</code></pre></div>
+</section>
+<section>
+  <h4>9. Automated Testing (Optional)</h4>
+  <p>You can write automated tests using xUnit and ASP.NET Core's test server to verify your MCP endpoints work as expected.</p>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-csharp">using Microsoft.AspNetCore.Mvc.Testing;
+using Xunit;
+
+namespace McpServer.Tests
+{
+    public class McpControllerTests : IClassFixture<WebApplicationFactory<Program>>
+    {
+        private readonly WebApplicationFactory<Program> _factory;
+
+        public McpControllerTests(WebApplicationFactory<Program> factory)
+        {
+            _factory = factory;
+        }
+
+        [Theory]
+        [InlineData("/api/mcp/execute", "POST", "{\"action\":\"languages/get\",\"input\":{\"user_id\":123}}", 200)]
+        public async Task TestLanguagesGet(string url, string method, string content, int expectedStatusCode)
+        {
+            var client = _factory.CreateClient();
+            var requestContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(url, requestContent);
+            response.EnsureSuccessStatusCode();
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Assert.Contains("languages", responseBody);
+        }
+    }
+}
+</code></pre></div>
+</section>
+<section>
+  <h4>10. Important MCP & OpenAI Integration URLs</h4>
+  <p>Below are examples of how to generate and format the most important URLs for MCP and OpenAI (function-calling) integrations in your project. These are essential for connecting your API to AI agents, testing tools, or external services.</p>
+  <ul>
+    <li><strong>MCP Tools Discovery URL:</strong> <code>http://your-domain.com/api/mcp/tools</code> (e.g. <code>http://localhost:8000/api/mcp/tools</code>)</li>
+    <li><strong>MCP Execute URL:</strong> <code>http://your-domain.com/api/mcp/execute</code> (e.g. <code>http://localhost:8000/api/mcp/execute</code>)</li>
+    <li><strong>OpenAI Function Calling:</strong> Use the same URLs for schema and execution. Example payload:</li>
+  </ul>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "action": "languages/get",
+  "input": { "user_id": 123 }
+}</code></pre></div>
+  <ul>
+    <li><strong>Other Useful URLs:</strong></li>
+    <li>Company MCP Tools: <code>http://your-domain.com/api/mcp/company/tools</code></li>
+    <li>Company MCP Execute: <code>http://your-domain.com/api/mcp/company/execute</code></li>
+  </ul>
+  <p>In the MCP Tester, paste the Tools Discovery URL and Execute URL in the configuration fields. For OpenAI or any LLM agent, use the same URLs for function schema and execution. Always use HTTPS in production for security.</p>
+  <hr/>
+  <h4>11. OpenAI Plugin Manifest & OpenAPI Schema Examples</h4>
+  <p>To integrate your MCP API with OpenAI (or any LLM that supports plugins/function-calling), provide the following files in your server's <code>/.well-known/</code> directory:</p>
+  <strong>OpenAI Plugin Manifest (ai-plugin.json):</strong>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "schema_version": "v1",
+  "name_for_model": "flowxtra_mcp",
+  "name_for_human": "Flowxtra MCP",
+  "description_for_model": "Tools to manage applicant languages using Flowxtra's MCP interface. Supports adding, updating, retrieving, and deleting languages for applicants.",
+  "description_for_human": "Manage applicant languages via Flowxtra's backend. Add, get, update, and delete language info securely.",
+  "auth": {
+    "type": "bearer",
+    "authorization_type": "header"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost:8000/.well-known/openapi.json",
+    "openapi_url": "http://localhost:8000/.well-known/openapi.json"
+  },
+  "logo_url": "https://partners.flowxtra.com/wp-content/uploads/2025/02/MainLogo@2x-2048x466.png",
+  "contact_email": "info@flowxtra.com",
+  "legal_info_url": "https://flowxtra.com/privacy-policy",
+  "version": "1.0.0"
+}</code></pre></div>
+  <strong>OpenAPI Schema (openapi.json):</strong>
+  <div class="mcp-code-block"><span class="copy-icon" onclick="copyStepCode(this)" title="Copy"><i class="fas fa-copy"></i></span><pre><code class="language-json">{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Flowxtra MCP API",
+    "version": "1.0.0",
+    "description": "API for managing applicant languages via MCP."
+  },
+  "servers": [
+    { "url": "http://localhost:8000" }
+  ],
+  "paths": {
+    "/api/mcp/execute": {
+      "post": {
+        "summary": "Execute MCP tool",
+        "description": "Executes a tool action (add, get, update, delete language)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": { "type": "string", "example": "languages/get" },
+                  "input": { "type": "object", "description": "Tool input parameters (see below)" }
+                },
+                "required": ["action", "input"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LanguageAddInput": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "integer" },
+          "language": { "type": "string" },
+          "level": { "type": "string" }
+        },
+        "required": ["user_id", "language", "level"]
+      },
+      "LanguageGetInput": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "integer" }
+        },
+        "required": ["user_id"]
+      },
+      "LanguageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "language": { "type": "string" },
+          "level": { "type": "string" }
+        },
+        "required": ["id", "language", "level"]
+      },
+      "LanguageDeleteInput": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" }
+        },
+        "required": ["id"]
+      }
+    }
+  }
+}</code></pre></div>
+  <h4>12. Adding to Courser and Clouda AI LLMs</h4>
+  <p><strong>Courser AI Integration:</strong></p>
+  <ol>
+    <li>Navigate to your Courser AI dashboard</li>
+    <li>Go to "API Integrations" &gt; "Add New Integration"</li>
+    <li>Select "MCP API" as the integration type</li>
+    <li>Enter your MCP API base URL</li>
+    <li>Upload or paste your OpenAPI spec (openapi.json)</li>
+    <li>Configure authentication if required</li>
+    <li>Test the connection and save</li>
+  </ol>
+  <p><strong>Clouda AI Integration:</strong></p>
+  <ol>
+    <li>Log into your Clouda AI console</li>
+    <li>Select "Integrations" from the left menu</li>
+    <li>Click "Add Integration" &gt; "Custom API"</li>
+    <li>Choose "MCP Compatible API"</li>
+    <li>Provide your MCP API endpoint URL</li>
+    <li>Upload the OpenAPI specification file</li>
+    <li>Set up any required API keys or tokens</li>
+    <li>Validate and deploy the integration</li>
+  </ol>
+  <p>Both platforms will automatically discover your API's capabilities through the OpenAPI spec and make them available to their respective AI models. The MCP standardization ensures consistent interaction patterns across different LLM platforms.</p>
+</section> 
