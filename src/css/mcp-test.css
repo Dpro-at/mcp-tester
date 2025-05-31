@@ -646,4 +646,52 @@ body.dark .about-card .about-companies > div {
   background: #23273a;
   color: #f3f6fa;
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+.about-company-card {
+  flex: 1;
+  min-width: 260px;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark .about-company-card {
+  background: #23273a;
+  color: #f3f6fa;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.about-company-title {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  color: #23272f;
+  transition: color 0.3s;
+}
+body.dark .about-company-title {
+  color: #f3f6fa;
+}
+.about-company-desc {
+  font-size: 1rem;
+  color: #23272f;
+  margin-bottom: 1.2rem;
+  text-align: left;
+  transition: color 0.3s;
+}
+body.dark .about-company-desc {
+  color: #f3f6fa;
+}
+.about-company-link {
+  color: var(--primary);
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+body.dark .about-company-link {
+  color: #4cc9f0;
 } 
